@@ -122,3 +122,31 @@ footer {
     font-size: 1.5rem;
   }
 }
+#langToggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: #38bdf8;
+  border: none;
+  color: #020617;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+  font-family: "Vazirmatn", sans-serif;
+}
+
+[dir="rtl"] .links {
+  text-align: center;
+}
+
+[dir="rtl"] #langToggle {
+  right: auto;
+  left: 15px;
+}
