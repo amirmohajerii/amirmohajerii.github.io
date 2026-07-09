@@ -2,80 +2,599 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resume</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>A Mohajeri</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #0d0d0d;
+      color: #c0c0c0;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      line-height: 1.4;
+      font-size: 16px;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .crt-screen {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: #0d0d0d;
+      overflow: hidden;
+    }
+
+    #boot-screen {
+      padding: 20px;
+      height: 100vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+      font-size: 14px;
+      color: #999;
+    }
+
+    #terminal {
+      padding: 20px;
+      padding-bottom: 72px;
+      height: 100vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+      display: none;
+    }
+
+    #terminal::-webkit-scrollbar, #boot-screen::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #terminal::-webkit-scrollbar-track, #boot-screen::-webkit-scrollbar-track {
+      background: #0d0d0d;
+    }
+
+    #terminal::-webkit-scrollbar-thumb, #boot-screen::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+
+    #terminal::-webkit-scrollbar-thumb:hover, #boot-screen::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    .line {
+      display: flex;
+      position: relative;
+      z-index: 1;
+    }
+
+    .prompt {
+      margin-right: 5px;
+      white-space: nowrap;
+      color: #e0e0e0;
+    }
+
+    input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #e0e0e0;
+      font-family: inherit;
+      font-size: inherit;
+      flex: 1;
+      caret-color: #e0e0e0;
+      caret-shape: block;
+    }
+
+    input:focus {
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { caret-color: #e0e0e0; }
+      50% { caret-color: transparent; }
+    }
+
+    img {
+      max-width: 400px;
+      display: block;
+      margin-top: 5px;
+    }
+
+    .banner {
+      font-family: 'JetBrains Mono', monospace;
+      font-size:11px;
+      line-height:11px;
+      white-space: pre;
+      display:inline-block;
+      font-weight:700;
+      letter-spacing:-0.4px;
+      text-shadow:
+        0 0 2px rgba(255,255,255,.25),
+        0 0 8px rgba(59,130,246,.35),
+        0 0 16px rgba(59,130,246,.15);
+    }
+
+    @keyframes screenFlash {
+      0% { background: #0d0d0d; }
+      50% { background: #ddd; }
+      100% { background: #0d0d0d; }
+    }
+
+    .banner-wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 30px;
+    }
+
+    .banner-image {
+      width: 120px;
+      height: 120px;
+      border: 2px solid #3b82f6;
+      border-radius: 4px;
+      object-fit: cover;
+      box-shadow: 0 0 15px rgba(59,130,246,0.3);
+      flex-shrink: 0;
+    }
+
+    .flash {
+      animation: screenFlash 0.1s;
+    }
+
+    @media (max-width: 768px) {
+      #terminal, #boot-screen {
+        font-size: 12px;
+        padding: 10px;
+        padding-bottom: 64px;
+      }
+      img {
+        max-width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="crt-screen">
+    <div id="boot-screen"></div>
+    <div id="terminal"></div>
+  </div>
+  
+  <script src="music-player.js"></script>
 
-  <button id="langToggle">FA</button>
+  <script>
+    const terminal = document.getElementById("terminal");
+    const bootScreen = document.getElementById("boot-screen");
 
-  <header class="container">
-    <div class="hero">
-      <h1 id="name">Your Name</h1>
-      <h2 id="title">Backend Developer • C# • ASP.NET</h2>
-      <p id="intro">
-        Software developer specialized in building secure, scalable,
-        high-performance backend systems using modern .NET technologies.
-      </p>
+    let cwd = "/home";
+    let activeProcess = null;
+    const fs = {
+      home: {
+        about: {
+          "readme.txt": "Hi 👋\n\nI'm Maddison.\nThis is my terminal-style website.\n\nType ls and cd around!"
+        },
+        projects: {
+          "keygen.txt": "Reverse engineering, cracking, RE tools, radare2, x64dbg",
+          "ascii.txt": `
+   ____  ____  _____ 
+  |  _ \\|  _ \\| ____|
+  | |_) | |_) |  _|  
+  |  __/|  _ <| |___ 
+  |_|   |_| \\_\\_____|
+`
+        },
+        contact: {
+          "email.txt": "email@example.com",
+          "github.txt": "https://github.com/yourname"
+        },
+        "welcome.txt": "Welcome to my terminal website!\nType help for commands."
+      }
+    };
 
-      <div class="links">
-        <a id="github" href="#" target="_blank">GitHub</a>
-        <a id="linkedin" href="#" target="_blank">LinkedIn</a>
-        <a id="email" href="mailto:you@email.com">Email</a>
-      </div>
+    function getDir(path) {
+      let parts = path.split("/").filter(Boolean);
+      let cur = fs;
+      for (let p of parts) cur = cur[p];
+      return cur;
+    }
+
+    function print(text = "") {
+      terminal.innerHTML += text + "\n";
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function printBoot(text = "") {
+      bootScreen.innerHTML += text + "\n";
+      bootScreen.scrollTop = bootScreen.scrollHeight;
+    }
+
+    function printBanner() {
+      // Inject the glitch styling once
+      if (!document.getElementById("banner-glitch-style")) {
+        const style = document.createElement("style");
+        style.id = "banner-glitch-style";
+        style.textContent = `
+          .banner {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: pre;
+            will-change: transform, filter, clip-path;
+          }
+
+          @keyframes banner-glitch-anim {
+            0%   { transform: translate(0,0);       filter: none;                                                clip-path: inset(0 0 0 0); }
+            6%   { transform: translate(-3px, 1px); filter: drop-shadow(3px 0 0 #ff2b6e) drop-shadow(-3px 0 0 #2bdcff); clip-path: inset(8% 0 55% 0); }
+            12%  { transform: translate(2px, -2px); filter: drop-shadow(-2px 0 0 #ff2b6e) drop-shadow(2px 0 0 #2bdcff); clip-path: inset(45% 0 20% 0); }
+            18%  { transform: translate(-4px, 0);   filter: none;                                                clip-path: inset(0 0 0 0); }
+            24%  { transform: translate(3px, 2px);  filter: drop-shadow(2px 0 0 #ff2b6e) drop-shadow(-2px 0 0 #2bdcff);  clip-path: inset(65% 0 5% 0); }
+            30%  { transform: translate(-1px, -1px);filter: drop-shadow(-3px 0 0 #ff2b6e) drop-shadow(3px 0 0 #2bdcff); clip-path: inset(15% 0 70% 0); }
+            36%  { transform: translate(0,0);       filter: none;                                                clip-path: inset(0 0 0 0); }
+            45%  { transform: translate(2px, 1px);  filter: drop-shadow(2px 0 0 #ff2b6e) drop-shadow(-2px 0 0 #2bdcff);  clip-path: inset(30% 0 40% 0); }
+            52%  { transform: translate(-2px, 0);   filter: none;                                                clip-path: inset(0 0 0 0); }
+            60%  { transform: translate(0,0);       filter: none;                                                clip-path: inset(0 0 0 0); }
+            100% { transform: translate(0,0);       filter: none;                                                clip-path: inset(0 0 0 0); }
+          }
+
+          .banner.glitching {
+            animation: banner-glitch-anim 650ms steps(1, end) 1;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+    print(`
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; width:100%;">
+          <span class="banner" id="amirmahdi-banner">
+          <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>   <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>   <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>  <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>
+          <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span>
+          <span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span>
+          <span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#7cb8ff">█</span><span style="color:#7cb8ff">█</span><span style="color:#f2f6ff">║</span>
+          <span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#9ac8ff">█</span><span style="color:#9ac8ff">█</span><span style="color:#f2f6ff">║</span>
+          <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>     <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>     <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>
+
+          <span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span>   <span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span>  <span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span>      <span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#b7d7ff">█</span><span style="color:#b7d7ff">█</span><span style="color:#f2f6ff">╗</span>
+          <span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">╗</span>     <span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#d0e4ff">█</span><span style="color:#d0e4ff">█</span><span style="color:#f2f6ff">║</span>
+          <span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">║</span>   <span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">║</span>     <span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">╗</span>  <span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#e6f0ff">█</span><span style="color:#e6f0ff">█</span><span style="color:#f2f6ff">║</span>
+          <span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">║</span>   <span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span>   <span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#f0f7ff">█</span><span style="color:#f0f7ff">█</span><span style="color:#f2f6ff">║</span>
+          <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>
+          <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>     <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>
+    </span>
+          <img id="banner-animation" src="frames/frame-1.png" style="width:100px; height:100px; border-radius:4px; object-fit:cover; flex-shrink:0;">
     </div>
-  </header>
+    `);
 
-  <main class="container">
+      // Set up the repeating glitch trigger once (guard against duplicate intervals
+      // if printBanner() is ever called more than once)
+      if (!window.__bannerGlitchStarted) {
+        window.__bannerGlitchStarted = true;
+        setInterval(() => {
+          const el = document.getElementById("amirmahdi-banner");
+          if (!el) return;
+          el.classList.remove("glitching");
+          void el.offsetWidth; // force reflow so the animation restarts cleanly
+          el.classList.add("glitching");
+        }, 20000);
+      }
 
-    <section>
-      <h3 id="aboutTitle">About Me</h3>
-      <p id="aboutText"></p>
-    </section>
+// Banner image animation - restart on every printBanner call
+      const totalFrames = 21;
+      window.__bannerCurrentFrame = 1;
+      window.__bannerDirection = 1;
 
-    <section>
-      <h3 id="skillsTitle">Skills</h3>
-      <div class="skills" id="skills"></div>
-    </section>
+      if (window.__bannerTimer) {
+        clearInterval(window.__bannerTimer);
+      }
 
-    <section>
-      <h3 id="projectsTitle">Projects</h3>
+      function bannerAnimate() {
+        const img = document.getElementById("banner-animation");
+        if (!img) return;
 
-      <div class="project">
-        <h4 id="p1Title"></h4>
-        <p id="p1Text"></p>
-      </div>
+        window.__bannerCurrentFrame += window.__bannerDirection;
 
-      <div class="project">
-        <h4 id="p2Title"></h4>
-        <p id="p2Text"></p>
-      </div>
-    </section>
+        if (window.__bannerCurrentFrame >= totalFrames) {
+          window.__bannerCurrentFrame = totalFrames;
+          img.src = `frames/frame-${window.__bannerCurrentFrame}.png?t=${Date.now()}`;
+          clearInterval(window.__bannerTimer);
+          setTimeout(() => {
+            window.__bannerDirection = -1;
+            window.__bannerTimer = setInterval(bannerAnimate, 70);
+          }, 24000);
+          return;
+        }
 
-    <section>
-      <h3 id="expTitle">Experience</h3>
-      <div class="experience">
-        <h4 id="expRole"></h4>
-        <p class="muted" id="expTime"></p>
-        <p id="expText"></p>
-      </div>
-    </section>
+        if (window.__bannerCurrentFrame <= 1) {
+          window.__bannerCurrentFrame = 1;
+          img.src = `frames/frame-${window.__bannerCurrentFrame}.png?t=${Date.now()}`;
+          window.__bannerDirection = 1;
+          return;
+        }
 
-    <section>
-      <h3 id="contactTitle">Contact</h3>
-      <p id="contactText"></p>
-    </section>
+        img.src = `frames/frame-${window.__bannerCurrentFrame}.png?t=${Date.now()}`;
+      }
 
-  </main>
+      window.__bannerTimer = setInterval(bannerAnimate, 70);
+    }
 
-  <footer>
-    <p id="footerText"></p>
-  </footer>
+    function prompt() {
+      const div = document.createElement("div");
+      div.className = "line";
 
-  <script src="script.js"></script>
+      const p = document.createElement("span");
+      p.className = "prompt";
+      p.textContent = `user@site:${cwd}$`;
+
+      const input = document.createElement("input");
+      input.autofocus = true;
+
+      input.onkeydown = e => {
+        if (e.key === "Enter") {
+          const cmd = input.value;
+          div.removeChild(input);
+          div.textContent += cmd;
+          handleCommand(cmd.trim());
+        }
+      };
+
+      div.appendChild(p);
+      div.appendChild(input);
+      terminal.appendChild(div);
+      input.focus();
+    }
+
+    function handleCommand(cmd) {
+      if (!cmd) return prompt();
+
+      let args = cmd.split(" ");
+      let base = args[0];
+
+      switch (base) {
+        case "ls":
+          ls();
+          break;
+        case "cd":
+          cd(args[1]);
+          break;
+        case "cat":
+          cat(args[1]);
+          break;
+        case "pwd":
+          print(cwd);
+          break;
+        case "clear":
+          terminal.innerHTML = "";
+          printBanner();
+          break;
+        case "help":
+          help();
+          break;
+        case "donut":
+          donut();
+          break;
+        case "exit":
+          stopProcess();
+          break;
+        case "music":
+        case "musicplayer":
+          const bar = document.getElementById("music-player-bar");
+          if (bar) {
+            bar.style.display = "flex";
+            print("Music player opened.");
+          } else {
+            print("Music player not found. Is music-player.js loaded?");
+          }
+          break;
+        default:
+          print(`command not found: ${base}`);
+      }
+
+      prompt();
+    }
+
+    function stopProcess() {
+      if (activeProcess) {
+        clearInterval(activeProcess);
+        activeProcess = null;
+        print("Process terminated.");
+      }
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.ctrlKey && e.key === "c") {
+        stopProcess();
+        prompt();
+      }
+    });
+
+    // Click anywhere to focus input
+    document.addEventListener("click", (e) => {
+      if (e.target.closest("#music-player-bar")) return;
+      const inputs = terminal.querySelectorAll("input");
+      if (inputs.length > 0) {
+        inputs[inputs.length - 1].focus();
+      }
+    });
+
+    function ls() {
+      let dir = getDir(cwd);
+      print(Object.keys(dir).join("    "));
+    }
+
+    function cd(path) {
+      if (!path || path === "~") {
+        cwd = "/home";
+        return;
+      }
+      if (path.startsWith("../")) {
+        let ups = path.split("/").filter(p => p === "..").length;
+        let parts = cwd.split("/").filter(Boolean);
+        parts = parts.slice(0, parts.length - ups);
+        cwd = "/" + parts.join("/");
+        if (cwd === "/") cwd = "/home";
+        return;
+      }
+      if (path === "..") {
+        let parts = cwd.split("/").filter(Boolean);
+        parts.pop();
+        cwd = "/" + parts.join("/");
+        if (cwd === "/") cwd = "/home";
+        return;
+      }
+      let newPath = cwd + "/" + path;
+      try {
+        let d = getDir(newPath);
+        if (typeof d === "object") cwd = newPath;
+        else print("Not a directory");
+      } catch {
+        print("No such directory");
+      }
+    }
+
+    function cat(file) {
+      let dir = getDir(cwd);
+      if (!dir[file]) return print("No such file");
+      let content = dir[file];
+      if (content.endsWith?.(".png")) {
+        let img = document.createElement("img");
+        img.src = content;
+        terminal.appendChild(img);
+      } else {
+        print(content);
+      }
+    }
+
+    function help() {
+      print(`Available commands:
+ls         -> list directory
+cd DIR     -> change directory
+cat FILE   -> read file
+pwd        -> show path
+clear      -> clear screen
+help       -> show commands
+donut      -> spinning donut animation
+music      -> reopen music player`);
+    }
+
+    function donut() {
+      if (activeProcess) clearInterval(activeProcess);
+      let A = 0, B = 0;
+      const width = 40, height = 22;
+      const chars = ".,-~:;=!*#$@";
+      activeProcess = setInterval(() => {
+        let z = Array(width * height).fill(0);
+        let b = Array(width * height).fill(" ");
+        for (let j = 0; j < 6.28; j += 0.07) {
+          for (let i = 0; i < 6.28; i += 0.02) {
+            let c = Math.sin(i), d = Math.cos(j);
+            let e = Math.sin(A), f = Math.sin(j);
+            let g = Math.cos(A), h = d + 2;
+            let D = 1 / (c * h * e + f * g + 5);
+            let l = Math.cos(i), m = Math.cos(B), n = Math.sin(B);
+            let t = c * h * g - f * e;
+            let x = Math.floor(width / 2 + 30 * D * (l * h * m - t * n));
+            let y = Math.floor(height / 2 + 15 * D * (l * h * n + t * m));
+            let o = x + width * y;
+            let N = Math.floor(8 * ((f * e - c * d * g) * m - c * d * e - f * g - l * d * n));
+            if (y >= 0 && y < height && x >= 0 && x < width && D > z[o]) {
+              z[o] = D;
+              b[o] = chars[Math.max(0, N)];
+            }
+          }
+        }
+        let output = "";
+        for (let k = 0; k < width * height; k++) {
+          output += k % width === 0 ? "\n" : b[k];
+        }
+        terminal.innerHTML = `<pre>${output}</pre>`;
+        A += 0.04;
+        B += 0.02;
+      }, 50);
+    }
+
+    function bootSequence() {
+      const bootMessages = [
+        "[ OK ] BIOS - American Megatrends Inc. v2.15.1236",
+        "[ OK ] CPU: Intel(R) Core(TM) i7-9750H @ 2.60GHz",
+        "[ OK ] Memory: 16384MB RAM (16384MB usable)",
+        "[ OK ] ACPI: PCI Interrupt Link [LNKA] (IRQs 3 4 5 6 7 9 10 11 12 14 15)",
+        "[ OK ] ACPI: PCI Interrupt Link [LNKB] (IRQs 3 4 5 6 7 9 10 *11 12 14 15)",
+        "[ OK ] ACPI: PCI Interrupt Link [LNKC] (IRQs 3 4 5 6 7 9 *10 11 12 14 15)",
+        "[ OK ] ACPI: PCI Interrupt Link [LNKD] (IRQs 3 4 5 6 7 9 10 *11 12 14 15)",
+        "[ OK ] PCI: Using ACPI for IRQ routing",
+        "[ OK ] SCSI subsystem initialized",
+        "[ OK ] usbcore: registered new interface driver usbfs",
+        "[ OK ] usbcore: registered new interface driver hub",
+        "[ OK ] usbcore: registered new device driver usb",
+        "[ OK ] PCI: Probing PCI hardware",
+        "[ OK ] BIOS settings: hdc:DMA, hdd:PIO",
+        "[ OK ] RAMDISK: Compressed image found at block 0",
+        "[ OK ] EXT4-fs (sda1): mounted filesystem with ordered data mode",
+        "[ OK ] VFS: Mounted root (ext4 filesystem) readonly",
+        "[ OK ] Freeing unused kernel memory: 256k freed",
+        "[ OK ] INIT: version 2.88 booting",
+        "[ OK ] Starting udev",
+        "[ OK ] udevd[378]: starting version 175",
+        "[ OK ] Setting hostname to 'amirmoha-terminal'",
+        "[ OK ] Checking root file system...",
+        "[ OK ] fsck from util-linux 2.20.1",
+        "[ OK ] /dev/sda1: clean, 234567/12345678 files, 1234567/12345678 blocks",
+        "[ OK ] Remounting root file system in read-write mode",
+        "[ OK ] Activating swap...",
+        "[ OK ] Cleaning up temporary files...",
+        "[ OK ] Configuring network interfaces...",
+        "[ OK ] Starting system logging daemon...",
+        "[ OK ] Starting kernel log daemon...",
+        "[ OK ] Starting OpenBSD Secure Shell server: sshd",
+        "[ OK ] Starting NTP server: ntpd",
+        "[ OK ] Starting periodic command scheduler: cron",
+        "[ OK ] Running local boot scripts (/etc/rc.local)",
+        "[ OK ] Loading terminal configuration...",
+        "Welcome to AMIRMOHA Terminal OS v4.20",
+        "Kernel 5.15.0-terminal-generic on an x86_64",
+        "",
+        "terminal login:"
+      ];
+
+      let index = 0;
+      const bootInterval = setInterval(() => {
+        if (index < bootMessages.length) {
+          printBoot(bootMessages[index]);
+          index++;
+        } else {
+          clearInterval(bootInterval);
+          setTimeout(() => {
+            document.querySelector('.crt-screen').classList.add('flash');
+            setTimeout(() => {
+              document.querySelector('.crt-screen').classList.remove('flash');
+              bootScreen.style.display = 'none';
+              terminal.style.display = 'block';
+              printBanner();
+              print("Type 'help' to see available commands.");
+              prompt();
+            }, 100);
+          }, 500);
+        }
+      }, 50);
+    }
+
+    bootSequence();
+  </script>
 </body>
 </html>
