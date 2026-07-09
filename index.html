@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>A Mohajeri</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/webp" sizes="32x32" href="favicon-32x32.webp">
+  <link rel="icon" type="image/webp" sizes="16x16" href="favicon-16x16.webp">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -277,7 +277,7 @@
           <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>
           <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>     <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>
     </span>
-          <img id="banner-animation" src="frames/frame-1.png" style="width:100px; height:100px; border-radius:4px; object-fit:cover; flex-shrink:0;">
+          <img id="banner-animation" src="frames/frame-1.webp" style="width:100px; height:100px; border-radius:4px; object-fit:cover; flex-shrink:0;">
     </div>
     `);
 
@@ -311,7 +311,7 @@
 
         if (window.__bannerCurrentFrame >= totalFrames) {
           window.__bannerCurrentFrame = totalFrames;
-          img.src = `frames/frame-${window.__bannerCurrentFrame}.png?t=${Date.now()}`;
+          img.src = `frames/frame-${window.__bannerCurrentFrame}.webp?t=${Date.now()}`;
           clearInterval(window.__bannerTimer);
           setTimeout(() => {
             window.__bannerDirection = -1;
@@ -322,15 +322,15 @@
 
         if (window.__bannerCurrentFrame <= 1) {
           window.__bannerCurrentFrame = 1;
-          img.src = `frames/frame-${window.__bannerCurrentFrame}.png?t=${Date.now()}`;
+          img.src = `frames/frame-${window.__bannerCurrentFrame}.webp?t=${Date.now()}`;
           window.__bannerDirection = 1;
           return;
         }
 
-        img.src = `frames/frame-${window.__bannerCurrentFrame}.png?t=${Date.now()}`;
+        img.src = `frames/frame-${window.__bannerCurrentFrame}.webp?t=${Date.now()}`;
       }
 
-      window.__bannerTimer = setInterval(bannerAnimate, 70);
+      window.__bannerTimer = setInterval(bannerAnimate, 75);
     }
 
     function prompt() {
@@ -471,7 +471,7 @@
       let dir = getDir(cwd);
       if (!dir[file]) return print("No such file");
       let content = dir[file];
-      if (content.endsWith?.(".png")) {
+      if (content.endsWith?.(".webp")) {
         let img = document.createElement("img");
         img.src = content;
         terminal.appendChild(img);
