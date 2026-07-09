@@ -300,41 +300,40 @@
       }
 
 // Banner image animation - restart on every printBanner call
-      window.__bannerCurrentFrame = 1;
-      window.__bannerDirection = 1;
+window.__bannerCurrentFrame = 1;
+window.__bannerDirection = 1;
 
-      if (window.__bannerTimer) {
-        clearInterval(window.__bannerTimer);
-      }
+if (window.__bannerTimer) clearInterval(window.__bannerTimer);
+if (window.__bannerTimeout) clearTimeout(window.__bannerTimeout);
 
-      function bannerAnimate() {
-        const img = document.getElementById("banner-animation");
-        if (!img) return;
+function bannerAnimate() {
+  const img = document.getElementById("banner-animation");
+  if (!img) return;
 
-        window.__bannerCurrentFrame += window.__bannerDirection;
+  window.__bannerCurrentFrame += window.__bannerDirection;
 
-        if (window.__bannerCurrentFrame >= totalFrames) {
-          window.__bannerCurrentFrame = totalFrames;
-          img.src = `frames/frame-${window.__bannerCurrentFrame}.webp?t=${Date.now()}`;
-          clearInterval(window.__bannerTimer);
-          setTimeout(() => {
-            window.__bannerDirection = -1;
-            window.__bannerTimer = setInterval(bannerAnimate, 70);
-          }, 24000);
-          return;
-        }
+  if (window.__bannerCurrentFrame >= 21) {
+    window.__bannerCurrentFrame = 21;
+    img.src = `frames/frame-21.webp`;
+    clearInterval(window.__bannerTimer);
+    window.__bannerTimeout = setTimeout(() => {
+      window.__bannerDirection = -1;
+      window.__bannerTimer = setInterval(bannerAnimate, 100);
+    }, 24000);
+    return;
+  }
 
-        if (window.__bannerCurrentFrame <= 1) {
-          window.__bannerCurrentFrame = 1;
-          img.src = `frames/frame-${window.__bannerCurrentFrame}.webp?t=${Date.now()}`;
-          window.__bannerDirection = 1;
-          return;
-        }
+  if (window.__bannerCurrentFrame <= 1) {
+    window.__bannerCurrentFrame = 1;
+    img.src = `frames/frame-1.webp`;
+    window.__bannerDirection = 1;
+    return;
+  }
 
-        img.src = `frames/frame-${window.__bannerCurrentFrame}.webp?t=${Date.now()}`;
-      }
+  img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
+}
 
-      window.__bannerTimer = setInterval(bannerAnimate, 75);
+window.__bannerTimer = setInterval(bannerAnimate, 100);
     }
 
     function prompt() {
