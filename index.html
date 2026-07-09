@@ -275,7 +275,7 @@
           <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#f2f6ff">╚</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">╗</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span><span style="color:#ffffff">█</span><span style="color:#ffffff">█</span><span style="color:#f2f6ff">║</span>
           <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>     <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span> <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>  <span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span><span style="color:#f2f6ff">╚</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">╝</span>
     </span>
-          <img id="banner-animation" src="frames/frame-1.webp" style="width:100px; height:100px; border-radius:4px; object-fit:cover; flex-shrink:0;">
+          <img id="banner-animation" src="portrait.gif" style="width:120px; height:120px; border-radius:4px; object-fit:cover; flex-shrink:0;">
     </div>
     `);
 
@@ -290,93 +290,6 @@
           void el.offsetWidth; // force reflow so the animation restarts cleanly
           el.classList.add("glitching");
         }, 20000);
-      }
-
-      // Banner image animation - wait for all frames to load first
-      window.__bannerCurrentFrame = 1;
-      window.__bannerDirection = 1;
-      window.__bannerTotalFrames = 21;
-      window.__bannerLoaded = 0;
-      window.__bannerReady = false;
-
-      if (window.__bannerTimer) clearInterval(window.__bannerTimer);
-      if (window.__bannerTimeout) clearTimeout(window.__bannerTimeout);
-
-      // Preload all frames and track progress
-      const preloadedFrames = [];
-      for (let i = 1; i <= window.__bannerTotalFrames; i++) {
-        const preload = new Image();
-        preload.onload = () => {
-          window.__bannerLoaded++;
-          // Show first frame once at least half are loaded
-          if (window.__bannerLoaded >= 10 && !window.__bannerReady) {
-            window.__bannerReady = true;
-            const img = document.getElementById("banner-animation");
-            if (img) img.src = `frames/frame-1.webp`;
-          }
-          // Start animation only when ALL frames are loaded
-          if (window.__bannerLoaded >= window.__bannerTotalFrames) {
-            window.__bannerReady = true;
-            startAnimation();
-          }
-        };
-        preload.onerror = () => {
-          // Still count errors so it doesn't get stuck
-          window.__bannerLoaded++;
-          if (window.__bannerLoaded >= window.__bannerTotalFrames) {
-            window.__bannerReady = true;
-            startAnimation();
-          }
-        };
-        preload.src = `frames/frame-${i}.webp`;
-        preloadedFrames.push(preload);
-      }
-
-      // Fallback: start after 5 seconds even if not all loaded
-      setTimeout(() => {
-        if (!window.__bannerReady) {
-          window.__bannerReady = true;
-          startAnimation();
-        }
-      }, 5000);
-
-      function startAnimation() {
-        if (window.__bannerTimer) return; // already started
-        
-        function bannerAnimate() {
-          const img = document.getElementById("banner-animation");
-          if (!img) return;
-
-          window.__bannerCurrentFrame += window.__bannerDirection;
-
-          if (window.__bannerCurrentFrame >= window.__bannerTotalFrames) {
-            window.__bannerCurrentFrame = window.__bannerTotalFrames;
-            img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
-            clearInterval(window.__bannerTimer);
-            window.__bannerTimeout = setTimeout(() => {
-              window.__bannerDirection = -1;
-              window.__bannerCurrentFrame = window.__bannerTotalFrames - 1;
-              window.__bannerTimer = setInterval(bannerAnimate, 100);
-            }, 24000);
-            return;
-          }
-
-          if (window.__bannerCurrentFrame <= 1) {
-            window.__bannerCurrentFrame = 1;
-            img.src = `frames/frame-1.webp`;
-            clearInterval(window.__bannerTimer);
-            window.__bannerTimeout = setTimeout(() => {
-              window.__bannerDirection = 1;
-              window.__bannerCurrentFrame = 2;
-              window.__bannerTimer = setInterval(bannerAnimate, 100);
-            }, 2000);
-            return;
-          }
-
-          img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
-        }
-
-        window.__bannerTimer = setInterval(bannerAnimate, 100);
       }
     }
 
