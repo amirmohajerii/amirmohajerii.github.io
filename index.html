@@ -279,13 +279,6 @@
     </div>
     `);
 
-      // Preload all frames for smooth animation
-      const totalFrames = 21;
-      for (let i = 1; i <= totalFrames; i++) {
-        const preload = new Image();
-        preload.src = `frames/frame-${i}.webp`;
-      }
-
       // Set up the repeating glitch trigger once (guard against duplicate intervals
       // if printBanner() is ever called more than once)
       if (!window.__bannerGlitchStarted) {
@@ -299,53 +292,92 @@
         }, 20000);
       }
 
-// Banner image animation - bulletproof for hosting
-window.__bannerCurrentFrame = 1;
-window.__bannerDirection = 1;
-window.__bannerTotalFrames = 21;
-
-if (window.__bannerTimer) clearInterval(window.__bannerTimer);
-if (window.__bannerTimeout) clearTimeout(window.__bannerTimeout);
-
-function bannerAnimate() {
-  const img = document.getElementById("banner-animation");
-  if (!img) return;
-
-  window.__bannerCurrentFrame += window.__bannerDirection;
-
-  // Hit the end
-  if (window.__bannerCurrentFrame >= window.__bannerTotalFrames) {
-    window.__bannerCurrentFrame = window.__bannerTotalFrames;
-    img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
-    clearInterval(window.__bannerTimer);
-    window.__bannerTimeout = setTimeout(() => {
-      window.__bannerDirection = -1;
-      window.__bannerCurrentFrame = window.__bannerTotalFrames - 1;
-      window.__bannerTimer = setInterval(bannerAnimate, 100);
-    }, 24000);
-    return;
-  }
-
-  // Hit the start
-  if (window.__bannerCurrentFrame <= 1) {
-    window.__bannerCurrentFrame = 1;
-    img.src = `frames/frame-1.webp`;
-    clearInterval(window.__bannerTimer);
-    window.__bannerTimeout = setTimeout(() => {
+      // Banner image animation - wait for all frames to load first
+      window.__bannerCurrentFrame = 1;
       window.__bannerDirection = 1;
-      window.__bannerCurrentFrame = 2;
-      window.__bannerTimer = setInterval(bannerAnimate, 100);
-    }, 2000);
-    return;
-  }
+      window.__bannerTotalFrames = 21;
+      window.__bannerLoaded = 0;
+      window.__bannerReady = false;
 
-  img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
-}
+      if (window.__bannerTimer) clearInterval(window.__bannerTimer);
+      if (window.__bannerTimeout) clearTimeout(window.__bannerTimeout);
 
-// Start animation after a short delay to ensure image is in DOM
-setTimeout(() => {
-  window.__bannerTimer = setInterval(bannerAnimate, 100);
-}, 500);
+      // Preload all frames and track progress
+      const preloadedFrames = [];
+      for (let i = 1; i <= window.__bannerTotalFrames; i++) {
+        const preload = new Image();
+        preload.onload = () => {
+          window.__bannerLoaded++;
+          // Show first frame once at least half are loaded
+          if (window.__bannerLoaded >= 10 && !window.__bannerReady) {
+            window.__bannerReady = true;
+            const img = document.getElementById("banner-animation");
+            if (img) img.src = `frames/frame-1.webp`;
+          }
+          // Start animation only when ALL frames are loaded
+          if (window.__bannerLoaded >= window.__bannerTotalFrames) {
+            window.__bannerReady = true;
+            startAnimation();
+          }
+        };
+        preload.onerror = () => {
+          // Still count errors so it doesn't get stuck
+          window.__bannerLoaded++;
+          if (window.__bannerLoaded >= window.__bannerTotalFrames) {
+            window.__bannerReady = true;
+            startAnimation();
+          }
+        };
+        preload.src = `frames/frame-${i}.webp`;
+        preloadedFrames.push(preload);
+      }
+
+      // Fallback: start after 5 seconds even if not all loaded
+      setTimeout(() => {
+        if (!window.__bannerReady) {
+          window.__bannerReady = true;
+          startAnimation();
+        }
+      }, 5000);
+
+      function startAnimation() {
+        if (window.__bannerTimer) return; // already started
+        
+        function bannerAnimate() {
+          const img = document.getElementById("banner-animation");
+          if (!img) return;
+
+          window.__bannerCurrentFrame += window.__bannerDirection;
+
+          if (window.__bannerCurrentFrame >= window.__bannerTotalFrames) {
+            window.__bannerCurrentFrame = window.__bannerTotalFrames;
+            img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
+            clearInterval(window.__bannerTimer);
+            window.__bannerTimeout = setTimeout(() => {
+              window.__bannerDirection = -1;
+              window.__bannerCurrentFrame = window.__bannerTotalFrames - 1;
+              window.__bannerTimer = setInterval(bannerAnimate, 100);
+            }, 24000);
+            return;
+          }
+
+          if (window.__bannerCurrentFrame <= 1) {
+            window.__bannerCurrentFrame = 1;
+            img.src = `frames/frame-1.webp`;
+            clearInterval(window.__bannerTimer);
+            window.__bannerTimeout = setTimeout(() => {
+              window.__bannerDirection = 1;
+              window.__bannerCurrentFrame = 2;
+              window.__bannerTimer = setInterval(bannerAnimate, 100);
+            }, 2000);
+            return;
+          }
+
+          img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
+        }
+
+        window.__bannerTimer = setInterval(bannerAnimate, 100);
+      }
     }
 
     function prompt() {
