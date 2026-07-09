@@ -299,9 +299,10 @@
         }, 20000);
       }
 
-// Banner image animation - restart on every printBanner call
+// Banner image animation - bulletproof for hosting
 window.__bannerCurrentFrame = 1;
 window.__bannerDirection = 1;
+window.__bannerTotalFrames = 21;
 
 if (window.__bannerTimer) clearInterval(window.__bannerTimer);
 if (window.__bannerTimeout) clearTimeout(window.__bannerTimeout);
@@ -312,28 +313,39 @@ function bannerAnimate() {
 
   window.__bannerCurrentFrame += window.__bannerDirection;
 
-  if (window.__bannerCurrentFrame >= 21) {
-    window.__bannerCurrentFrame = 21;
-    img.src = `frames/frame-21.webp`;
+  // Hit the end
+  if (window.__bannerCurrentFrame >= window.__bannerTotalFrames) {
+    window.__bannerCurrentFrame = window.__bannerTotalFrames;
+    img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
     clearInterval(window.__bannerTimer);
     window.__bannerTimeout = setTimeout(() => {
       window.__bannerDirection = -1;
+      window.__bannerCurrentFrame = window.__bannerTotalFrames - 1;
       window.__bannerTimer = setInterval(bannerAnimate, 100);
     }, 24000);
     return;
   }
 
+  // Hit the start
   if (window.__bannerCurrentFrame <= 1) {
     window.__bannerCurrentFrame = 1;
     img.src = `frames/frame-1.webp`;
-    window.__bannerDirection = 1;
+    clearInterval(window.__bannerTimer);
+    window.__bannerTimeout = setTimeout(() => {
+      window.__bannerDirection = 1;
+      window.__bannerCurrentFrame = 2;
+      window.__bannerTimer = setInterval(bannerAnimate, 100);
+    }, 2000);
     return;
   }
 
   img.src = `frames/frame-${window.__bannerCurrentFrame}.webp`;
 }
 
-window.__bannerTimer = setInterval(bannerAnimate, 100);
+// Start animation after a short delay to ensure image is in DOM
+setTimeout(() => {
+  window.__bannerTimer = setInterval(bannerAnimate, 100);
+}, 500);
     }
 
     function prompt() {
