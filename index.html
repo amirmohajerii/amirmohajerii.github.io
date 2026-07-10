@@ -61,6 +61,7 @@
       width: 100%;
       z-index: 1;
       display: none;
+      scroll-behavior: smooth;
     }
 
     #terminal::-webkit-scrollbar, #boot-screen::-webkit-scrollbar {
@@ -220,6 +221,14 @@
       }
     }
 
+    .banner-container {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 5 !important;
+      background: #0d0d0d !important;
+      padding-bottom: 8px !important;
+    }
+
     /* --- EXTRA SMALL SCREENS (Phones) --- */
     @media (max-width: 480px) {
       .banner {
@@ -326,7 +335,7 @@
       }
 
       print(`
-            <div class="banner-container" style="display:flex; align-items:flex-start; justify-content:space-between; width:100%;">
+          <div class="banner-container" style="display:flex; align-items:flex-start; justify-content:space-between; width:100%; position:sticky; top:0; z-index:5; background:#0d0d0d; padding-bottom:8px;">
             <span class="banner" id="amirmahdi-banner">
            <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>   <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>   <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>  <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>
           <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span>
@@ -384,6 +393,10 @@
       div.appendChild(input);
       terminal.appendChild(div);
       input.focus();
+      // Scroll input into view, accounting for music player
+      setTimeout(() => {
+        input.scrollIntoView({ block: "center", behavior: "smooth" });
+      }, 50);
     }
 
     function handleCommand(cmd) {
@@ -565,6 +578,13 @@ music      -> reopen music player`);
         A += 0.04;
         B += 0.02;
       }, 50);
+      // After prompt() is called in donut, add this
+      setTimeout(() => {
+        const lastInput = terminal.querySelectorAll("input");
+        if (lastInput.length > 0) {
+          lastInput[lastInput.length - 1].scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+      }, 100);
     }
 
     function bootSequence() {
