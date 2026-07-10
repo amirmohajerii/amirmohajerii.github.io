@@ -147,7 +147,7 @@ function createMusicPlayer() {
   }
 
   function updateUI() {
-    document.getElementById("mp-play").textContent = isPlaying ? "⏸" : "▶";
+    document.getElementById("mp-play").innerHTML = isPlaying ? '<span style="font-family: sans-serif;">⏸</span>' : "▶";
     if (currentTrack >= 0 && playlist.length > 0) {
       document.getElementById("mp-title").textContent = playlist[currentTrack].name;
     }

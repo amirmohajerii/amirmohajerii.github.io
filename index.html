@@ -439,6 +439,8 @@
       if (activeProcess) {
         clearInterval(activeProcess);
         activeProcess = null;
+        const donutEl = document.getElementById("donut-container");
+        if (donutEl) donutEl.remove();
         print("Process terminated.");
       }
     }
@@ -524,6 +526,16 @@ music      -> reopen music player`);
       let A = 0, B = 0;
       const width = 40, height = 22;
       const chars = ".,-~:;=!*#$@";
+      
+      // Create a container for the donut
+      const donutContainer = document.createElement("div");
+      donutContainer.id = "donut-container";
+      donutContainer.style.whiteSpace = "pre";
+      donutContainer.style.fontFamily = "monospace";
+      donutContainer.style.fontSize = "12px";
+      donutContainer.style.lineHeight = "1.2";
+      terminal.appendChild(donutContainer);
+      
       activeProcess = setInterval(() => {
         let z = Array(width * height).fill(0);
         let b = Array(width * height).fill(" ");
@@ -549,7 +561,7 @@ music      -> reopen music player`);
         for (let k = 0; k < width * height; k++) {
           output += k % width === 0 ? "\n" : b[k];
         }
-        terminal.innerHTML = `<pre>${output}</pre>`;
+        donutContainer.textContent = output;
         A += 0.04;
         B += 0.02;
       }, 50);
@@ -635,6 +647,65 @@ music      -> reopen music player`);
     // Trigger on mobile touch
     document.addEventListener("touchstart", restartGif, { passive: true });
 
+        // Tab autocomplete - cycle through matches without printing
+    const autocompleteCommands = ["ls", "cd", "cat", "pwd", "clear", "help", "donut", "exit", "music", "musicplayer"];
+    let tabCycleIndex = -1;
+    let tabCycleMatches = [];
+    let tabCycleOriginal = "";
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Tab") {
+        e.preventDefault();
+        const inputs = terminal.querySelectorAll("input");
+        if (inputs.length === 0) return;
+        const input = inputs[inputs.length - 1];
+        const value = input.value.trim();
+        if (!value) return;
+        
+        const parts = value.split(" ");
+        const lastPart = parts[parts.length - 1];
+        
+        // Reset cycle if the word being completed changed
+        if (lastPart !== tabCycleOriginal || tabCycleMatches.length === 0) {
+          tabCycleIndex = -1;
+          tabCycleOriginal = lastPart;
+          tabCycleMatches = [];
+          
+          if (parts.length === 1) {
+            const cmdMatch = autocompleteCommands.filter(c => c.startsWith(lastPart));
+            let dir;
+            try { dir = getDir(cwd); } catch(err) { dir = {}; }
+            const fileMatch = Object.keys(dir).filter(f => f.startsWith(lastPart));
+            tabCycleMatches = [...cmdMatch, ...fileMatch];
+          } else {
+            let dir;
+            try { dir = getDir(cwd); } catch(err) { dir = {}; }
+            tabCycleMatches = Object.keys(dir).filter(f => f.startsWith(lastPart));
+          }
+        }
+        
+        if (tabCycleMatches.length === 0) return;
+        
+        // Cycle to next match
+        tabCycleIndex = (tabCycleIndex + 1) % tabCycleMatches.length;
+        
+        if (parts.length === 1) {
+          input.value = tabCycleMatches[tabCycleIndex] + " ";
+        } else {
+          parts[parts.length - 1] = tabCycleMatches[tabCycleIndex];
+          input.value = parts.join(" ") + " ";
+        }
+      }
+    });
+
+    // Reset cycle when user types something else
+    document.addEventListener("input", (e) => {
+      if (e.target.tagName === "INPUT" && e.target.closest("#terminal")) {
+        tabCycleIndex = -1;
+        tabCycleMatches = [];
+        tabCycleOriginal = "";
+      }
+    });
 
     // Initialize the boot sequence
     bootSequence();
