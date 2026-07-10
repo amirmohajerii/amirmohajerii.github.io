@@ -160,6 +160,32 @@
       animation: screenFlash 0.1s;
     }
 
+    /* --- GLOBAL RESPONSIVE FIXES --- */
+    #terminal, #boot-screen {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .line {
+      display: flex;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap; /* Allows text input to wrap if screen is too narrow */
+      width: 100%;
+    }
+
+    .prompt {
+      margin-right: 5px;
+      white-space: pre-wrap; /* Allows long paths to wrap nicely */
+      word-break: break-all;
+      color: #e0e0e0;
+    }
+
+    input {
+      min-width: 50px; /* Prevents input from disappearing on wrap */
+    }
+
+    /* --- TABLET & MOBILE RESPONSIVENESS --- */
     @media (max-width: 768px) {
       #terminal, #boot-screen {
         font-size: 12px;
@@ -169,7 +195,46 @@
       img {
         max-width: 100%;
       }
+      
+      /* Force banner to stay side-by-side */
+      .banner-container {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        width: 100%;
+        overflow: hidden; /* Prevent any stray pixels from causing a scrollbar */
+      }
+      
+      /* Shrink ASCII text aggressively to fit on the left */
+      .banner {
+        font-size: 3.5px !important;
+        line-height: 4px !important;
+      }
+      
+      /* Shrink image to balance the smaller text */
+      #banner-animation {
+        width: 70px !important;
+        height: 70px !important;
+      }
     }
+
+    /* --- EXTRA SMALL SCREENS (Phones) --- */
+    @media (max-width: 480px) {
+      .banner {
+        font-size: 2.2px !important;
+        line-height: 2.5px !important;
+      }
+      #banner-animation {
+        width: 50px !important;
+        height: 50px !important;
+      }
+      .prompt, input, #terminal, #boot-screen {
+        font-size: 11px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -260,9 +325,9 @@
         document.head.appendChild(style);
       }
 
-    print(`
-          <div style="display:flex; align-items:flex-start; justify-content:space-between; width:100%;">
-          <span class="banner" id="amirmahdi-banner">
+      print(`
+            <div class="banner-container" style="display:flex; align-items:flex-start; justify-content:space-between; width:100%;">
+            <span class="banner" id="amirmahdi-banner">
            <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>   <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>   <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>  <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#3b82f6">█</span><span style="color:#3b82f6">█</span><span style="color:#f2f6ff">╗</span>
           <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span> <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">═</span><span style="color:#f2f6ff">═</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">╗</span><span style="color:#4f8df9">█</span><span style="color:#4f8df9">█</span><span style="color:#f2f6ff">║</span>
           <span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#f2f6ff">╝</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">╔</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span>  <span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span><span style="color:#60a5fa">█</span><span style="color:#60a5fa">█</span><span style="color:#f2f6ff">║</span>
@@ -556,6 +621,22 @@ music      -> reopen music player`);
       }, 50);
     }
 
+// --- GIF RESTART INTERACTION ---
+    function restartGif(e) {
+      if (e.target && e.target.id === "banner-animation") {
+        // Appending the current timestamp forces the browser to reload the GIF from the start
+        e.target.src = "portrait.gif?t=" + new Date().getTime();
+      }
+    }
+
+    // Trigger on desktop hover
+    document.addEventListener("mouseover", restartGif);
+    
+    // Trigger on mobile touch
+    document.addEventListener("touchstart", restartGif, { passive: true });
+
+
+    // Initialize the boot sequence
     bootSequence();
   </script>
 </body>
