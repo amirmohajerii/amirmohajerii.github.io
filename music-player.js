@@ -111,6 +111,8 @@ function createMusicPlayer() {
   const musicFiles = [
     "The-Red-Circle-Le-Castle-Vania.mp3",
     "Every-Ending-Has-A-Beginning.mp3",
+    "Lure the Wolf.mp3",
+    "SM2002 Main Theme.mp3",
     "Mon fol amour.mp3",
     "Tous-les-memes.mp3",
   ];
