@@ -653,18 +653,23 @@ music      -> reopen music player`);
       }, 50);
     }
 
-// --- GIF RESTART INTERACTION ---
+    // --- GIF RESTART WITH THROTTLE ---
+    let gifThrottle = false;
+
     function restartGif(e) {
       if (e.target && e.target.id === "banner-animation") {
-        // Appending the current timestamp forces the browser to reload the GIF from the start
+        if (gifThrottle) return;
+        gifThrottle = true;
+        
         e.target.src = "portrait.gif?t=" + new Date().getTime();
+        
+        setTimeout(() => {
+          gifThrottle = false;
+        }, 1000);
       }
     }
 
-    // Trigger on desktop hover
     document.addEventListener("mouseover", restartGif);
-    
-    // Trigger on mobile touch
     document.addEventListener("touchstart", restartGif, { passive: true });
 
         // Tab autocomplete - cycle through matches without printing
