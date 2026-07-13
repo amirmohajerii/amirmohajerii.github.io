@@ -22,7 +22,7 @@
       font-family: "JetBrains Mono", monospace;
       font-weight: 500;
       line-height: 1.4;
-      font-size: 16px;
+      font-size: 14px;
       overflow: hidden;
       height: 100vh;
     }
@@ -262,24 +262,74 @@
     let activeProcess = null;
     const fs = {
       home: {
-        about: {
-          "readme.txt": "Hi 👋\n\nI'm Maddison.\nThis is my terminal-style website.\n\nType ls and cd around!"
-        },
-        projects: {
-          "keygen.txt": "Reverse engineering, cracking, RE tools, radare2, x64dbg",
-          "ascii.txt": `
-   ____  ____  _____ 
-  |  _ \\|  _ \\| ____|
-  | |_) | |_) |  _|  
-  |  __/|  _ <| |___ 
-  |_|   |_| \\_\\_____|
-`
-        },
-        contact: {
-          "email.txt": "email@example.com",
-          "github.txt": "https://github.com/yourname"
-        },
-        "welcome.txt": "Welcome to my terminal website!\nType help for commands."
+        "skills.txt": `
+          <div style="font-family:'JetBrains Mono',monospace; color:#e0e0e0; padding:10px 0; max-height:500px; overflow-y:auto;">
+            <div style="color:#3b82f6; font-size:14px; margin-bottom:14px;">▸ SKILLS</div>
+            
+            <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; max-width:700px;">
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/.netCore.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">ASP.Net Core</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/javascript.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">JavaScript</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/react.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">React</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/nodejs.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">Node.js</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/linux.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">Linux</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/cpp.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">C/C++</div>
+              </div>
+
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/docker.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">Docker</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/reverse.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">Reverse Eng.</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/sql.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">SQL</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/git.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">Git</div>
+              </div>
+
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/css.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">CSS</div>
+              </div>
+              
+              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
+                <img src="icons/assembly.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
+                <div style="font-size:9px; color:#aaa;">Assembly</div>
+              </div>
+
+            </div>
+          </div>`
       }
     };
 
@@ -513,7 +563,14 @@
       let dir = getDir(cwd);
       if (!dir[file]) return print("No such file");
       let content = dir[file];
-      if (content.endsWith?.(".webp")) {
+      
+      if (typeof content === "string" && content.trim().startsWith("<div")) {
+        // Render as HTML
+        const container = document.createElement("div");
+        container.innerHTML = content;
+        terminal.appendChild(container);
+        terminal.scrollTop = terminal.scrollHeight;
+      } else if (content.endsWith?.(".webp") || content.endsWith?.(".png") || content.endsWith?.(".gif")) {
         let img = document.createElement("img");
         img.src = content;
         terminal.appendChild(img);
