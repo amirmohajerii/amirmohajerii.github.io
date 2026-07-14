@@ -260,6 +260,12 @@
         grid-template-columns: repeat(3, 1fr) !important;
       }
     }
+    
+    @font-face {
+      font-family: 'custom';
+      src: url('Rounded Elegance.ttf') format('truetype');
+    }
+
   </style>
 </head>
 <body>
@@ -277,67 +283,66 @@
     let cwd = "/home";
     let activeProcess = null;
     const fs = {
-      home: {"skills.txt": `
-<div class="skills-grid" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; max-width:580px;">
+      home: {"skills.txt": `<div class="skills-grid" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; max-width:580px; font-family:'custom', monospace;">
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/csharp.png" style="width:48px; height:48px;">
+        <img src="icons/csharp-original.svg" style="width:48px; height:48px;">
       <span style="font-size:10px; color:#c0c0c0;">C#</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
       <img src="icons/dotnetCore.png" style="width:48px; height:48px;">
-      <span style="font-size:10px; color:#c0c0c0;">ASP.NET</span>
+      <span style="font-size:10px; color:#c0c0c0;">ASP.NET Core</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/microservices.png" style="width:48px; height:48px;">
-      <span style="font-size:10px; color:#c0c0c0;">Microservices</span>
+      <img src="icons/linux-original.svg" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">Linux</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/sql.png" style="width:48px; height:48px;">
+      <img src="icons/sqldeveloper-original.svg" style="width:48px; height:48px;">
       <span style="font-size:10px; color:#c0c0c0;">SQL</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/docker.png" style="width:48px; height:48px;">
+      <img src="icons/docker-original.svg" style="width:48px; height:48px;">
       <span style="font-size:10px; color:#c0c0c0;">Docker</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/restapi.png" style="width:48px; height:48px;">
-      <span style="font-size:10px; color:#c0c0c0;">REST APIs</span>
+      <img src="icons/networking.svg" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">Network</span>
     </div>
 
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/redis.png" style="width:48px; height:48px;">
+      <img src="icons/redis-original.svg" style="width:48px; height:48px;">
       <span style="font-size:10px; color:#c0c0c0;">Redis</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/rabbitmq.png" style="width:48px; height:48px;">
+      <img src="icons/rabbitmq-original.svg" style="width:48px; height:48px;">
       <span style="font-size:10px; color:#c0c0c0;">RabbitMQ</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/grpc.png" style="width:48px; height:48px;">
+      <img src="icons/grpc-original.svg" style="width:48px; height:48px;">
       <span style="font-size:10px; color:#c0c0c0;">gRPC</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/git.png" style="width:48px; height:48px;">
+      <img src="icons/git-original.svg" style="width:48px; height:48px;">
       <span style="font-size:10px; color:#c0c0c0;">Git</span>
     </div>
 
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/efcore.png" style="width:48px; height:48px;">
-      <span style="font-size:10px; color:#c0c0c0;">EF Core</span>
+      <img src="icons/python-original.svg" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">Python</span>
     </div>
     
     <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-      <img src="icons/ddd.png" style="width:48px; height:48px;">
-      <span style="font-size:10px; color:#c0c0c0;">DDD</span>
+      <img src="icons/mongodb-original.svg" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">MongoDB</span>
     </div>
 
   </div>`}
