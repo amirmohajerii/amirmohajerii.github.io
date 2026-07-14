@@ -119,6 +119,11 @@
       display: block;
       margin-top: 5px;
     }
+    
+    svg {
+      width: 48px;
+      height: 48px;
+    }
 
     .banner {
       font-family: 'JetBrains Mono', 'Courier New', 'Consolas', monospace !important;
@@ -243,7 +248,18 @@
         font-size: 11px;
       }
     }
+    .skills-grid {
+      display: grid !important;
+      grid-template-columns: repeat(6, 1fr) !important;
+      gap: 10px !important;
+      max-width: 580px !important;
+    }
 
+    @media (max-width: 600px) {
+      .skills-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -261,76 +277,70 @@
     let cwd = "/home";
     let activeProcess = null;
     const fs = {
-      home: {
-        "skills.txt": `
-          <div style="font-family:'JetBrains Mono',monospace; color:#e0e0e0; padding:10px 0; max-height:500px; overflow-y:auto;">
-            <div style="color:#3b82f6; font-size:14px; margin-bottom:14px;">▸ SKILLS</div>
-            
-            <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; max-width:700px;">
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/.netCore.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">ASP.Net Core</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/javascript.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">JavaScript</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/react.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">React</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/nodejs.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">Node.js</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/linux.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">Linux</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/cpp.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">C/C++</div>
-              </div>
+      home: {"skills.txt": `
+<div class="skills-grid" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; max-width:580px;">
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/csharp.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">C#</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/aspnet.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">ASP.NET</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/microservices.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">Microservices</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/sql.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">SQL</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/docker.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">Docker</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/restapi.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">REST APIs</span>
+    </div>
 
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/docker.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">Docker</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/reverse.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">Reverse Eng.</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/sql.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">SQL</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/git.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">Git</div>
-              </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/redis.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">Redis</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/rabbitmq.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">RabbitMQ</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/grpc.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">gRPC</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/git.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">Git</span>
+    </div>
 
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/css.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">CSS</div>
-              </div>
-              
-              <div style="text-align:center; background:#141414; border:1px solid #2a2a2a; padding:10px 6px; border-radius:4px;">
-                <img src="icons/assembly.png" style="width:48px; height:48px; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto;">
-                <div style="font-size:9px; color:#aaa;">Assembly</div>
-              </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/efcore.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">EF Core</span>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <img src="icons/ddd.png" style="width:48px; height:48px;">
+      <span style="font-size:10px; color:#c0c0c0;">DDD</span>
+    </div>
 
-            </div>
-          </div>`
-      }
+  </div>`}
     };
 
     function getDir(path) {
@@ -565,10 +575,11 @@
       let content = dir[file];
       
       if (typeof content === "string" && content.trim().startsWith("<div")) {
-        // Render as HTML
-        const container = document.createElement("div");
-        container.innerHTML = content;
-        terminal.appendChild(container);
+        const temp = document.createElement("div");
+        temp.innerHTML = content;
+        while (temp.firstChild) {
+          terminal.appendChild(temp.firstChild);
+        }
         terminal.scrollTop = terminal.scrollHeight;
       } else if (content.endsWith?.(".webp") || content.endsWith?.(".png") || content.endsWith?.(".gif")) {
         let img = document.createElement("img");
