@@ -7,6 +7,36 @@ let activeProcess = null;
 let commandHistory = [];
 let historyIndex = -1;
 
+// ============ LOCAL STORAGE ============
+function saveState() {
+  const state = {
+    fs: window.fs || {},
+    cwd: cwd,
+    history: commandHistory
+  };
+  try {
+    localStorage.setItem("terminal-state", JSON.stringify(state));
+  } catch(e) {
+    // Storage full - ignore
+  }
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem("terminal-state");
+    if (saved) {
+      const state = JSON.parse(saved);
+      window.fs = state.fs || { home: {} };
+      cwd = state.cwd || "/home";
+      commandHistory = state.history || [];
+      return true;
+    }
+  } catch(e) {
+    // Corrupted data - start fresh
+  }
+  return false;
+}
+
 // ============ FILESYSTEM ============
 const fs = {
 
@@ -207,10 +237,20 @@ function handleCommand(cmd) {
     case "mv":
       print(mv(args[1], args[2]));
       break;
+    case "reset":
+    case "wipe":
+      localStorage.removeItem("terminal-state");
+      window.fs = { home: {} };
+      commandHistory = [];
+      cwd = "/home";
+      terminal.innerHTML = "";
+      printBanner();
+      print("All data wiped. Starting fresh.");
+      break;
     default:
       print(`command not found: ${base}`);
   }
-
+  saveState();
   prompt();
 }
 
@@ -268,20 +308,26 @@ function cat(file) {
 }
 
 function help() {
-  print(`Available commands:
-ls         -> list directory
-cd DIR     -> change directory
-cat FILE   -> read file
-pwd        -> show path
-mkdir DIR  -> create directory
-touch FILE -> create file
-rm NAME    -> remove file/directory
-write FILE -> write to file
-mv OLD NEW -> move/rename
-clear      -> clear screen
-help       -> show commands
-donut      -> spinning donut animation
-music      -> reopen music player`);
+  print(`Usage: [command] [arguments]
+
+Commands:
+  ls           List directory contents
+  cd  &lt;dir&gt;    Change current directory
+  cat &lt;file&gt;   Display file contents
+  pwd          Print working directory
+  mkdir &lt;dir&gt;  Create a new directory
+  touch &lt;file&gt; [content]    Create a new file
+  rm   &lt;name&gt;  Remove file or directory
+  write &lt;file&gt; &lt;content&gt;    Write content to a file
+  mv   &lt;old&gt; &lt;new&gt;          Move or rename a file
+  clear              Clear the terminal screen
+  help               Display this help message
+  donut              Display spinning donut animation
+  music              Reopen the music player bar
+  wipe               Reset all data and start fresh
+
+Use ↑/↓ arrows to navigate command history.
+Press Tab to autocomplete commands and filenames.`);
 }
 
 function stopProcess() {
