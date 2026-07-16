@@ -4,6 +4,8 @@ const bootScreen = document.getElementById("boot-screen");
 
 let cwd = "/home";
 let activeProcess = null;
+let commandHistory = [];
+let historyIndex = -1;
 
 // ============ FILESYSTEM ============
 const fs = {
@@ -83,6 +85,7 @@ function getDir(path) {
   return cur;
 }
 
+
 // ============ OUTPUT ============
 function print(text = "") {
   terminal.innerHTML += text + "\n";
@@ -105,6 +108,7 @@ function prompt() {
 
   const input = document.createElement("input");
   input.autofocus = true;
+  input.spellcheck = false;
 
   input.onkeydown = e => {
     if (e.key === "Enter") {
@@ -112,6 +116,24 @@ function prompt() {
       div.removeChild(input);
       div.textContent += cmd;
       handleCommand(cmd.trim());
+    }
+    // Arrow up/down history
+    else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        historyIndex--;
+        input.value = commandHistory[historyIndex];
+      }
+    }
+    else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (historyIndex < commandHistory.length - 1) {
+        historyIndex++;
+        input.value = commandHistory[historyIndex];
+      } else {
+        historyIndex = commandHistory.length;
+        input.value = "";
+      }
     }
   };
 
@@ -131,6 +153,9 @@ function handleCommand(cmd) {
   let args = cmd.split(" ");
   let base = args[0];
 
+  // Save to history
+  commandHistory.push(cmd);
+  historyIndex = commandHistory.length;
   switch (base) {
     case "ls":
       ls();
