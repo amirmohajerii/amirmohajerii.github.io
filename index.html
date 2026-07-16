@@ -279,19 +279,27 @@
 
 <script>
   // --- GIF RESTART WITH THROTTLE ---
-  let gifThrottle = false;
+let gifThrottle = false;
+let gifTimer = null;
 
-  function restartGif(e) {
-    if (e.target && e.target.id === "banner-animation") {
-      if (gifThrottle) return;
-      gifThrottle = true;
-      e.target.src = "portrait.gif?t=" + new Date().getTime();
-      setTimeout(() => { gifThrottle = false; }, 1000);
-    }
+function restartGif(e) {
+  if (e.target && e.target.id === "banner-animation") {
+    if (gifThrottle) return;
+    gifThrottle = true;
+    
+    // Clear any pending timer
+    if (gifTimer) clearTimeout(gifTimer);
+    
+    e.target.src = "portrait.gif?t=" + new Date().getTime();
+    
+    gifTimer = setTimeout(() => {
+      gifThrottle = false;
+    }, 1500);
   }
+}
 
-  document.addEventListener("mouseover", restartGif);
-  document.addEventListener("touchstart", restartGif, { passive: true });
+document.addEventListener("mouseenter", restartGif);
+document.addEventListener("touchstart", restartGif, { passive: true });
 </script>
 
 </body>
