@@ -10,35 +10,32 @@ let historyIndex = -1;
 // ============ LOCAL STORAGE ============
 function saveState() {
   const state = {
-    fs: window.fs || {},
+    fs: fs,
     cwd: cwd,
     history: commandHistory
   };
-  try {
-    localStorage.setItem("terminal-state", JSON.stringify(state));
-  } catch(e) {
-    // Storage full - ignore
-  }
+  localStorage.setItem("terminal-state", JSON.stringify(state));
 }
 
 function loadState() {
-  try {
-    const saved = localStorage.getItem("terminal-state");
-    if (saved) {
+  const saved = localStorage.getItem("terminal-state");
+  if (saved) {
+    try {
       const state = JSON.parse(saved);
-      window.fs = state.fs || { home: {} };
+      // Restore filesystem
+      for (let key in state.fs) {
+        fs[key] = state.fs[key];
+      }
       cwd = state.cwd || "/home";
       commandHistory = state.history || [];
       return true;
-    }
-  } catch(e) {
-    // Corrupted data - start fresh
+    } catch(e) {}
   }
   return false;
 }
 
 // ============ FILESYSTEM ============
-const fs = {
+window.fs = window.fs || {
 
       home: {"skills.txt": `<div class="skills-grid" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; max-width:580px; font-family:'custom', monospace;">
     
@@ -104,6 +101,8 @@ const fs = {
 
   </div>`}
     };
+
+const fs = window.fs;
 
 function getDir(path) {
   let parts = path.split("/").filter(Boolean);
@@ -619,6 +618,12 @@ function bootSequence() {
       }, 500);
     }
   }, 50);
+}
+
+// Load saved state on startup
+const wasLoaded = loadState();
+if (wasLoaded) {
+  // Don't print here - terminal isn't visible yet
 }
 
 bootSequence();
