@@ -278,28 +278,37 @@
 <script src="music-player.js"></script>
 
 <script>
-  // --- GIF RESTART WITH THROTTLE ---
+// --- GIF RESTART WITH THROTTLE ---
 let gifThrottle = false;
-let gifTimer = null;
 
 function restartGif(e) {
-  if (e.target && e.target.id === "banner-animation") {
+  const img = e.target;
+  if (img && img.id === "banner-animation") {
     if (gifThrottle) return;
     gifThrottle = true;
     
-    // Clear any pending timer
-    if (gifTimer) clearTimeout(gifTimer);
+    img.src = "portrait.gif?t=" + new Date().getTime();
     
-    e.target.src = "portrait.gif?t=" + new Date().getTime();
-    
-    gifTimer = setTimeout(() => {
+    setTimeout(() => {
       gifThrottle = false;
     }, 1500);
   }
 }
 
-document.addEventListener("mouseenter", restartGif);
-document.addEventListener("touchstart", restartGif, { passive: true });
+// Attach listeners only after the terminal is visible
+function setupGifHover() {
+  document.addEventListener("mouseenter", restartGif, true);
+  document.addEventListener("touchstart", restartGif, { passive: true });
+}
+
+// Wait for terminal to appear, then setup hover
+const observer = new MutationObserver(() => {
+  if (document.getElementById("banner-animation")) {
+    setupGifHover();
+    observer.disconnect();
+  }
+});
+observer.observe(document.body, { childList: true, subtree: true });
 </script>
 
 </body>
