@@ -278,37 +278,30 @@
 <script src="music-player.js"></script>
 
 <script>
-// --- GIF RESTART WITH THROTTLE ---
-let gifThrottle = false;
-
-function restartGif(e) {
-  const img = e.target;
-  if (img && img.id === "banner-animation") {
-    if (gifThrottle) return;
-    gifThrottle = true;
+// Attach GIF hover AFTER the banner image exists in DOM
+const checkForBanner = setInterval(() => {
+  const bannerImg = document.getElementById("banner-animation");
+  if (bannerImg) {
+    clearInterval(checkForBanner);
     
-    img.src = "portrait.gif?t=" + new Date().getTime();
+    let gifThrottle = false;
     
-    setTimeout(() => {
-      gifThrottle = false;
-    }, 1500);
+    bannerImg.addEventListener("mouseenter", () => {
+      if (gifThrottle) return;
+      gifThrottle = true;
+      bannerImg.src = "portrait.gif?t=" + Date.now();
+      setTimeout(() => { gifThrottle = false; }, 1500);
+    });
+    
+    bannerImg.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      if (gifThrottle) return;
+      gifThrottle = true;
+      bannerImg.src = "portrait.gif?t=" + Date.now();
+      setTimeout(() => { gifThrottle = false; }, 1500);
+    });
   }
-}
-
-// Attach listeners only after the terminal is visible
-function setupGifHover() {
-  document.addEventListener("mouseenter", restartGif, true);
-  document.addEventListener("touchstart", restartGif, { passive: true });
-}
-
-// Wait for terminal to appear, then setup hover
-const observer = new MutationObserver(() => {
-  if (document.getElementById("banner-animation")) {
-    setupGifHover();
-    observer.disconnect();
-  }
-});
-observer.observe(document.body, { childList: true, subtree: true });
+}, 200);
 </script>
 
 </body>
