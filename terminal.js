@@ -9,7 +9,7 @@ let historyIndex = -1;
 
 // ============ LOCAL STORAGE ============
 // Bump this whenever you change the default fs content (skills.txt, contact.txt, new files, etc.)
-const FS_VERSION = 2;
+const FS_VERSION = 3;
 
 function saveState() {
   const state = {
@@ -137,6 +137,10 @@ window.fs = window.fs || {
 
   <img src="icons/location.png" style="width:100%; border-radius:4px; display:block;">
 
+</div>`,
+"about.txt": `
+<div id="about-typer" style="font-family:'oswald', monospace; font-size: 15px; color:#c0c0c0; padding:10px 0; line-height:1.7; max-width:640px; white-space: normal !important;">
+  <span id="about-text"></span>
 </div>`}
     };
 
@@ -590,6 +594,58 @@ function printBanner() {
     }, 20000);
   }
 }
+
+const ABOUT_TYPE_SPEED = 5; // ms per character
+
+const aboutObserver = new MutationObserver((mutations) => {
+  for (const m of mutations) {
+    for (const node of m.addedNodes) {
+      if (node.nodeType !== 1) continue;
+      const target = node.id === "about-text" ? node : node.querySelector?.("#about-text");
+      if (!target) continue;
+      if (target.dataset.animated) continue;
+      target.dataset.animated = "1";
+
+      const raw = "Backend developer with 2 years of hands-on experience designing and shipping [b]ASP.NET Core Web APIs[/b], following principles like [b]Clean Architecture[/b], [b]Domain-Driven Design[/b], [b]CQRS[/b], and [b]SOLID[/b]. I focus on well-bounded [b]microservices[/b], proper inter-service communication, and choosing the right data storage for each job. Before moving fully into backend, I spent a year on [b]frontend[/b], which shaped how I think about the whole system, not just one layer. I'm also deeply interested in [b]networking[/b] and [b]Linux[/b] — the low-level layers everything else runs on top of. Driven by building systems that hold up under real-world scale and change.";
+
+      const plain = raw.replace(/\[\/?b\]/g, "");
+      target.innerHTML = "";
+      let i = 0;
+
+      function step() {
+        if (i >= plain.length) return;
+
+        let out = "";
+        let vIdx = 0;
+        for (let r = 0; r < raw.length && vIdx <= i; r++) {
+          if (raw.startsWith("[b]", r)) {
+            if (vIdx <= i) out += "<span style='background:#3b82f6; color:#0d0d0d; padding:0 3px; border-radius:2px;'>";
+            r += 2;
+            continue;
+          }
+          if (raw.startsWith("[/b]", r)) {
+            if (vIdx <= i) out += "</span>";
+            r += 3;
+            continue;
+          }
+          if (vIdx <= i) {
+            const ch = raw.charAt(r);
+            out += ch === "<" ? "&lt;" : ch === "&" ? "&amp;" : ch;
+          }
+          vIdx++;
+        }
+
+        target.innerHTML = out;
+        i++;
+        setTimeout(step, ABOUT_TYPE_SPEED);
+      }
+      step();
+      return;
+    }
+  }
+});
+
+aboutObserver.observe(terminal, { childList: true, subtree: true });
 
 // ============ BOOT SEQUENCE ============
 function bootSequence() {
