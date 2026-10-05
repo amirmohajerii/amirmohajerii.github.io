@@ -8,8 +8,12 @@ let commandHistory = [];
 let historyIndex = -1;
 
 // ============ LOCAL STORAGE ============
+// Bump this whenever you change the default fs content (skills.txt, contact.txt, new files, etc.)
+const FS_VERSION = 2;
+
 function saveState() {
   const state = {
+    fsVersion: FS_VERSION,
     fs: fs,
     cwd: cwd,
     history: commandHistory
@@ -19,18 +23,22 @@ function saveState() {
 
 function loadState() {
   const saved = localStorage.getItem("terminal-state");
-  if (saved) {
-    try {
-      const state = JSON.parse(saved);
-      // Restore filesystem
-      for (let key in state.fs) {
-        fs[key] = state.fs[key];
-      }
-      cwd = state.cwd || "/home";
+  if (!saved) return false;
+  try {
+    const state = JSON.parse(saved);
+    // If shipped fs version changed, keep history + cwd but reset fs to new defaults
+    if (state.fsVersion !== FS_VERSION) {
       commandHistory = state.history || [];
-      return true;
-    } catch(e) {}
-  }
+      cwd = "/home";
+      return false;
+    }
+    for (let key in state.fs) {
+      fs[key] = state.fs[key];
+    }
+    cwd = state.cwd || "/home";
+    commandHistory = state.history || [];
+    return true;
+  } catch(e) {}
   return false;
 }
 
