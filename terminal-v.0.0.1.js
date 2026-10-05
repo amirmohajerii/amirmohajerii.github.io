@@ -120,7 +120,7 @@ window.fs = window.fs || {
       <a href="https://www.linkedin.com/in/amirmahdi-mohajeri-9237882ab" target="_blank" style="color:#e0e0e0; text-decoration:none; font-size:11px; margin-left:6px; line-height:1;">Amirmahdi Mohajeri</a>
     </div>
 
-    <div style="flex:0 0 auto; display:flex; align-items:center;">
+    <div style="flex:0 0 auto; display:flex; align-items:flex-end;">
       <img src="icons/phone.svg" style="width:24px; height:24px; display:block;">
       <a href="tel:+989024226780" style="color:#e0e0e0; text-decoration:none; font-size:11px; margin-left:6px; line-height:1;">+98 9024226780</a>
     </div>
