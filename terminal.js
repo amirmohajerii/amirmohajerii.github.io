@@ -606,9 +606,7 @@ const aboutObserver = new MutationObserver((mutations) => {
       if (target.dataset.animated) continue;
       target.dataset.animated = "1";
 
-      const raw = "Backend developer with 2 years of hands-on experience designing and shipping [b]ASP.NET Core Web APIs[/b], following principles like [b]Clean Architecture[/b], [b]Domain-Driven Design[/b], [b]CQRS[/b], and [b]SOLID[/b]. I focus on well-bounded [b]microservices[/b], proper inter-service communication, and choosing the right data storage for each job. Before moving fully into backend, I spent a year on [b]frontend[/b], which shaped how I think about the whole system, not just one layer. I'm also deeply interested in [b]networking[/b] and [b]Linux[/b] — the low-level layers everything else runs on top of. Driven by building systems that hold up under real-world scale and change.";
-
-      const plain = raw.replace(/\[\/?b\]/g, "");
+      const raw = "Backend developer with 2 years of hands-on experience designing and shipping [b]ASP.NET Core Web APIs[/b] using and mastering [b]Clean Architecture[/b], [b]DDD[/b], and [b]CQRS[/b]. I focus on well-bounded [b]microservices[/b], proper inter-service communication, [b]caching[/b], and choosing the right data store for each job. [b]Testing[/b] — both unit and integration — is part of the flow, not an afterthought. A year spent on [b]frontend[/b] before switching to backend shaped how I think about whole systems, not just one layer, and I've worked in a cross-functional team that pushed me to grow fast. Deeply interested in [b]networking[/b] and [b]Linux[/b] — the layers everything else runs on. I build for systems that have to survive real-world scale and change.";      const plain = raw.replace(/\[\/?b\]/g, "");
       target.innerHTML = "";
       let i = 0;
 
