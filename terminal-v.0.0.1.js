@@ -99,7 +99,37 @@ window.fs = window.fs || {
       <span style="font-size:10px; color:#c0c0c0;">MongoDB</span>
     </div>
 
-  </div>`}
+  </div>`,
+"contact.txt": `
+<div style="font-family:'custom', monospace; padding:10px 0; white-space: nowrap !important;">
+
+  <div style="display:flex; flex-wrap:wrap; gap:28px; margin-bottom:20px; align-items:center;">
+
+    <div style="flex:0 0 auto; display:flex; align-items:flex-end;">
+      <img src="icons/gmail.svg" style="width:24px; height:24px; display:block;">
+      <a href="mailto:amirmohajeri0011@gmail.com" style="color:#e0e0e0; text-decoration:none; font-size:11px; margin-left:6px; line-height:1;">amirmohajeri0011@gmail.com</a>
+    </div>
+
+    <div style="flex:0 0 auto; display:flex; align-items:flex-end;">
+      <img src="icons/github.svg" style="width:24px; height:24px; display:block;">
+      <a href="https://github.com/amirmohajerii" target="_blank" style="color:#e0e0e0; text-decoration:none; font-size:11px; margin-left:6px; line-height:1;">amirmohajerii</a>
+    </div>
+
+    <div style="flex:0 0 auto; display:flex; align-items:flex-end;">
+      <img src="icons/linkedin.svg" style="width:24px; height:24px; display:block;">
+      <a href="https://www.linkedin.com/in/amirmahdi-mohajeri-9237882ab" target="_blank" style="color:#e0e0e0; text-decoration:none; font-size:11px; margin-left:6px; line-height:1;">Amirmahdi Mohajeri</a>
+    </div>
+
+    <div style="flex:0 0 auto; display:flex; align-items:center;">
+      <img src="icons/phone.svg" style="width:24px; height:24px; display:block;">
+      <a href="tel:+989024226780" style="color:#e0e0e0; text-decoration:none; font-size:11px; margin-left:6px; line-height:1;">+98 9024226780</a>
+    </div>
+
+  </div>
+
+  <img src="icons/location.png" style="width:100%; border-radius:4px; display:block;">
+
+</div>`}
     };
 
 const fs = window.fs;
