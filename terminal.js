@@ -339,6 +339,9 @@ function cat(file) {
       terminal.appendChild(temp.firstChild);
     }
     terminal.scrollTop = terminal.scrollHeight;
+    setTimeout(() => {
+      terminal.scrollTop = terminal.scrollHeight;
+    }, 50);
   } else if (content.endsWith?.(".webp") || content.endsWith?.(".png") || content.endsWith?.(".gif")) {
     let img = document.createElement("img");
     img.src = content;
