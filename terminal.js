@@ -637,6 +637,7 @@ const aboutObserver = new MutationObserver((mutations) => {
         }
 
         target.innerHTML = out;
+        terminal.scrollTop = terminal.scrollHeight; 
         i++;
         setTimeout(step, ABOUT_TYPE_SPEED);
       }
